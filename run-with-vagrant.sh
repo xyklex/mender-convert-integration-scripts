@@ -7,3 +7,4 @@
 vagrant up --provider virtualbox
 vagrant ssh -- 'bash -c "cd /vagrant && /vagrant/docker-create-integration-binaries"'
 vagrant destroy -f
+sudo chown $(id -u):$(id -g) output/*
