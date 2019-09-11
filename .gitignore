@@ -1,2 +1,4 @@
 uboot-mender
 output
+ubuntu-bionic*.log
+.vagrant
