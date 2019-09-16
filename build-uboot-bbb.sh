@@ -21,7 +21,7 @@ export ARCH=arm
 # Test if the toolchain is actually installed
 ${CROSS_COMPILE}gcc --version
 
-[ -d uboot-mender ] || git clone https://github.com/mendersoftware/uboot-mender.git -b mender-bbb-2018.07
+git clone https://github.com/mendersoftware/uboot-mender.git -b mender-bbb-2018.07
 cd uboot-mender
 make am335x_boneblack_defconfig
 make
