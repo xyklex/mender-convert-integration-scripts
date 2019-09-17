@@ -21,7 +21,8 @@ export ARCH=arm
 # Test if the toolchain is actually installed
 arm-linux-gnueabihf-gcc --version
 
-git clone https://github.com/mendersoftware/uboot-mender.git -b mender-rpi-2018.07
+UBOOT_MENDER_BRANCH=2018.07
+git clone https://github.com/mendersoftware/uboot-mender.git -b mender-rpi-${UBOOT_MENDER_BRANCH}
 cd uboot-mender
 
 # Change defconfig depending which RPi you are targeting e.g
@@ -56,10 +57,11 @@ EOF
 
 mkdir integration-binaries
 cp u-boot.bin tools/env/fw_printenv fw_env.config boot.scr integration-binaries/
+git log --graph --pretty=oneline -15 > integration-binaries/uboot-git-log.txt
 cd integration-binaries
 
 # Change name here depending on which board you are targeting
-tar cvf raspberrypi3-integration-2018.07.tar.gz ./*
+tar cvf raspberrypi3-integration-${UBOOT_MENDER_BRANCH}.tar.gz ./*
 cd -
 
 # Writing the image to SD/eMMC
