@@ -24,5 +24,4 @@ cp /work/uboot-mender/integration-binaries/*.tar* /output
 rm -rf /work/uboot-mender
 
 /usr/local/bin/build-uboot-bbb.sh
-cp /work/uboot-mender/integration-binaries/*.tar* /output
-rm -rf /work/uboot-mender
+mv /work/*integration*.tar /output
