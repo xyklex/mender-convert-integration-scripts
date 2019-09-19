@@ -24,23 +24,25 @@ ${CROSS_COMPILE}gcc --version
 UBOOT_MENDER_BRANCH=2018.07
 
 for TARGET_OS in debian; do
-    rm -rf uboot-mender
-    git clone https://github.com/mendersoftware/uboot-mender.git -b mender-bbb-${TARGET_OS}-${UBOOT_MENDER_BRANCH}
-    cd uboot-mender
-    git log --graph --pretty=oneline -15 > uboot-git-log.txt
-    make am335x_boneblack_defconfig
-    make
-    make envtools
-    case ${TARGET_OS} in
-        debian )
-            cat <<- "EOF" > fw_env.config
+    for TARGET_MEDIA in sdcard emmc; do
+        rm -rf uboot-mender
+        git clone https://github.com/mendersoftware/uboot-mender.git -b mender-bbb-${TARGET_OS}-${TARGET_MEDIA}-${UBOOT_MENDER_BRANCH}
+        cd uboot-mender
+        git log --graph --pretty=oneline -15 > uboot-git-log.txt
+        make am335x_boneblack_defconfig
+        make
+        make envtools
+        case ${TARGET_OS} in
+            debian )
+                cat <<- "EOF" > fw_env.config
 		/dev/mmcblk0 0x800000 0x20000
 		/dev/mmcblk0 0x1000000 0x20000
 		EOF
-            cp tools/env/fw_printenv .
-            FILES="uboot-git-log.txt u-boot.img MLO fw_printenv fw_env.config"
-            ;;
-    esac
-    tar cvf ../beaglebone-black-integration-${TARGET_OS}-${UBOOT_MENDER_BRANCH}.tar ${FILES}
-    cd -
+                cp tools/env/fw_printenv .
+                FILES="uboot-git-log.txt u-boot.img MLO fw_printenv fw_env.config"
+                ;;
+        esac
+        tar cvf ../beaglebone-black-integration-${TARGET_OS}-${TARGET_MEDIA}-${UBOOT_MENDER_BRANCH}.tar ${FILES}
+        cd -
+    done
 done
