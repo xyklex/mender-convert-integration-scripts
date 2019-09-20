@@ -15,34 +15,67 @@
 
 set -e
 
-export CROSS_COMPILE=arm-linux-gnueabi-
-export ARCH=arm
-
-# Test if the toolchain is actually installed
-${CROSS_COMPILE}gcc --version
-
 UBOOT_MENDER_BRANCH=2018.07
 
-for TARGET_OS in debian; do
-    for TARGET_MEDIA in sdcard emmc; do
-        rm -rf uboot-mender
-        git clone https://github.com/mendersoftware/uboot-mender.git -b mender-bbb-${TARGET_OS}-${TARGET_MEDIA}-${UBOOT_MENDER_BRANCH}
-        cd uboot-mender
-        git log --graph --pretty=oneline -15 > uboot-git-log.txt
-        make am335x_boneblack_defconfig
-        make
-        make envtools
-        case ${TARGET_OS} in
-            debian )
-                cat <<- "EOF" > fw_env.config
+uboot_build() {
+    local os=$1
+    local media=$2
+    local CROSS_COMPILE=arm-linux-gnueabi-
+    local ARCH=arm
+    local MAKE="make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
+
+    # Test if the toolchain is actually installed
+    ${CROSS_COMPILE}gcc --version
+
+    ${MAKE} mrproper
+    case ${media} in
+        "sdcard") DEFCONFIG=am335x_boneblack_defconfig;;
+        "emmc") DEFCONFIG=am335x_boneblack_emmc_defconfig;;
+        *) echo Unknown target media ${media}; exit 0;;
+    esac
+
+    ${MAKE} ${DEFCONFIG}
+    ${MAKE}
+    ${MAKE} envtools
+    cp tools/env/fw_printenv .
+}
+
+generate_fw_env_config() {
+    local os=$1
+    local media=$2
+    case ${os}:${media} in
+        debian:sdcard )
+            cat <<- "EOF" > fw_env.config
 		/dev/mmcblk0 0x800000 0x20000
 		/dev/mmcblk0 0x1000000 0x20000
 		EOF
-                cp tools/env/fw_printenv .
-                FILES="uboot-git-log.txt u-boot.img MLO fw_printenv fw_env.config"
-                ;;
-        esac
-        tar cvf ../beaglebone-black-integration-${TARGET_OS}-${TARGET_MEDIA}-${UBOOT_MENDER_BRANCH}.tar ${FILES}
-        cd -
+            ;;
+        debian:emmc )
+            cat <<- "EOF" > fw_env.config
+		/dev/mmcblk1 0x800000 0x20000
+		/dev/mmcblk1 0x1000000 0x20000
+		EOF
+            ;;
+        * )
+            echo "Unknown OS and Media combination ${os}:${media}."
+            exit 1
+            ;;
+    esac
+}
+
+for TARGET_OS in debian; do
+    rm -rf uboot-mender
+    git clone https://github.com/mendersoftware/uboot-mender.git -b mender-bbb-${TARGET_OS}-${UBOOT_MENDER_BRANCH}
+    cd uboot-mender
+    git log --graph --pretty=oneline -15 > uboot-git-log.txt
+    for TARGET_MEDIA in sdcard emmc; do
+        uboot_build ${TARGET_OS} ${TARGET_MEDIA}
+        generate_fw_env_config ${TARGET_OS} ${TARGET_MEDIA}
+        tar cvf ../beaglebone-black-integration-${TARGET_OS}-${TARGET_MEDIA}-${UBOOT_MENDER_BRANCH}.tar \
+            uboot-git-log.txt \
+            u-boot.img \
+            MLO \
+            fw_printenv \
+            fw_env.config
     done
 done
