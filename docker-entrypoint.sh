@@ -19,9 +19,17 @@ set -e
 mkdir -p /work
 cd /work
 
-/usr/local/bin/build-uboot-rpi3.sh
+# Raspberry Pi 0 WiFi
+/usr/local/bin/build-uboot-rpi.sh rpi_0_w_defconfig raspberrypi0w
 cp /work/uboot-mender/integration-binaries/*.tar* /output
-rm -rf /work/uboot-mender
+
+# Raspberry Pi 3 B/B+
+/usr/local/bin/build-uboot-rpi.sh rpi_3_32b_defconfig raspberrypi3
+cp /work/uboot-mender/integration-binaries/*.tar* /output
+
+# Raspberry Pi 4 B
+/usr/local/bin/build-uboot-rpi.sh rpi_4_32b_defconfig raspberrypi4
+cp /work/uboot-mender/integration-binaries/*.tar* /output
 
 /usr/local/bin/build-uboot-bbb.sh
 mv /work/*integration*.tar /output
