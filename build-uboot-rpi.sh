@@ -86,5 +86,5 @@ cd integration-binaries
 #    - raspberrypi3
 #    - raspberrypi4
 #
-tar cvf ${rpi_board}-integration-${UBOOT_MENDER_BRANCH}.tar.gz ./*
+tar cvf ${rpi_board}-${UBOOT_MENDER_BRANCH}.tar.gz ./*
 cd -

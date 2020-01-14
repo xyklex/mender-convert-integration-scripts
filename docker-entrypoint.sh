@@ -31,5 +31,6 @@ cp /work/uboot-mender/integration-binaries/*.tar* /output
 /usr/local/bin/build-uboot-rpi.sh rpi_4_32b_defconfig raspberrypi4
 cp /work/uboot-mender/integration-binaries/*.tar* /output
 
+# Beagle Bone Black
 /usr/local/bin/build-uboot-bbb.sh
-mv /work/*integration*.tar /output
+cp /work/beaglebone_black*.tar /output

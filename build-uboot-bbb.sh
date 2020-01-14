@@ -71,7 +71,8 @@ for TARGET_OS in debian; do
     for TARGET_MEDIA in sdcard emmc; do
         uboot_build ${TARGET_OS} ${TARGET_MEDIA}
         generate_fw_env_config ${TARGET_OS} ${TARGET_MEDIA}
-        tar cvf ../beaglebone-black-integration-${TARGET_OS}-${TARGET_MEDIA}-${UBOOT_MENDER_BRANCH}.tar \
+        BEAGLEBONE_BLACK_CONFIG="beaglebone_black_${TARGET_OS}_${TARGET_MEDIA}"
+        tar cvf ../${BEAGLEBONE_BLACK_CONFIG}-${UBOOT_MENDER_BRANCH}.tar \
             uboot-git-log.txt \
             u-boot.img \
             MLO \
