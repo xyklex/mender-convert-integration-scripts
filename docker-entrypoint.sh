@@ -33,6 +33,6 @@ cp /work/uboot-mender/integration-binaries/*.tar* /output
 
 # Beagle Bone Black
 /usr/local/bin/build-uboot-bbb.sh
-cp /work/beaglebone_black*.tar /output
+cp /work/beaglebone_black*.tar* /output
 
 chown -R --reference /output /output/*
