@@ -14,5 +14,5 @@ WORKDIR grub-${GRUB_VERSION}
 RUN ./configure \
     --prefix=/install \
     --with-platform=efi
-RUN make
+RUN make -j $(nproc)
 RUN make install
