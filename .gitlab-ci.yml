@@ -21,8 +21,6 @@ build:uboot:
   image: docker
   services:
     - docker:dind
-  before_script:
-    - apk --update --no-cache add sudo
   script:
     - IMAGE_NAME=$DOCKER_REPOSITORY:pr ./docker-create-integration-binaries
   artifacts:
@@ -36,7 +34,7 @@ build:grub-efi:
   services:
     - docker:dind
   before_script:
-    - apk --update --no-cache add sudo libc6-compat
+    - apk --update --no-cache add libc6-compat
   script:
     - (cd grub-efi && GRUB_VERSION=$GRUB_VERSION ./docker-create-grub-efi-binaries)
   artifacts:
