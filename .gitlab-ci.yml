@@ -2,8 +2,6 @@ variables:
   GRUB_VERSION: '2.02'
   DOCKER_REPOSITORY: mendersoftware/mender-convert-integration-scripts
   S3_BUCKET_NAME: mender
-  S3_BUCKET_PATH_UBOOT: "mender-convert/uboot"
-  S3_BUCKET_PATH_GRUB: "mender-convert/grub-efi"
 
 include:
   - project: 'Northern.tech/Mender/mendertesting'
@@ -50,61 +48,8 @@ publish:s3:
     - build:grub-efi
   before_script:
     - apt update && apt install -yyq awscli
-    - UBOOT_MENDER_BRANCH_BBB=$(grep ^UBOOT_MENDER_BRANCH= build-uboot-bbb.sh | cut -d= -f2)
-    - UBOOT_MENDER_BRANCH_RPI=$(grep ^UBOOT_MENDER_BRANCH= build-uboot-rpi.sh | cut -d= -f2)
   script:
-    # U-Boot binaries
-    - echo "Publishing uboot for beaglebone_black_debian_emmc version ${UBOOT_MENDER_BRANCH_BBB}"
-    - aws s3 cp output/beaglebone_black_debian_emmc-${UBOOT_MENDER_BRANCH_BBB}.tar
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_UBOOT/beaglebone/beaglebone_black_debian_emmc-${UBOOT_MENDER_BRANCH_BBB}.tar
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_UBOOT/beaglebone/beaglebone_black_debian_emmc-${UBOOT_MENDER_BRANCH_BBB}.tar
-    - echo "Publishing uboot for beaglebone_black_debian_sdcard version ${UBOOT_MENDER_BRANCH_BBB}"
-    - aws s3 cp output/beaglebone_black_debian_sdcard-${UBOOT_MENDER_BRANCH_BBB}.tar
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_UBOOT/beaglebone/beaglebone_black_debian_sdcard-${UBOOT_MENDER_BRANCH_BBB}.tar
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_UBOOT/beaglebone/beaglebone_black_debian_sdcard-${UBOOT_MENDER_BRANCH_BBB}.tar
-    - echo "Publishing uboot for raspberrypi0w version ${UBOOT_MENDER_BRANCH_RPI}"
-    - aws s3 cp output/raspberrypi0w-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_UBOOT/raspberrypi/raspberrypi0w-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_UBOOT/raspberrypi/raspberrypi0w-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-    - echo "Publishing uboot for raspberrypi3 version ${UBOOT_MENDER_BRANCH_RPI}"
-    - aws s3 cp output/raspberrypi3-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_UBOOT/raspberrypi/raspberrypi3-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_UBOOT/raspberrypi/raspberrypi3-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-    - echo "Publishing uboot for raspberrypi4 version ${UBOOT_MENDER_BRANCH_RPI}"
-    - aws s3 cp output/raspberrypi4-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_UBOOT/raspberrypi/raspberrypi4-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_UBOOT/raspberrypi/raspberrypi4-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-    # GRUB EFI binaries
-    - echo "Publishing grub-efi for x86-64"
-    - aws s3 cp grub-efi/output/grub-efi-bootx64.efi
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_GRUB/$GRUB_VERSION/x86-64/grub-efi-bootx64.efi
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_GRUB/$GRUB_VERSION/x86-64/grub-efi-bootx64.efi
-    - aws s3 cp grub-efi/output/x86-64/bin/grub-editenv
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_GRUB/$GRUB_VERSION/x86-64/grub-editenv
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_GRUB/$GRUB_VERSION/x86-64/grub-editenv
-    - echo "Publishing grub-efi for arm"
-    - aws s3 cp grub-efi/output/grub-efi-bootarm.efi
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_GRUB/$GRUB_VERSION/arm/grub-efi-bootarm.efi
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_GRUB/$GRUB_VERSION/arm/grub-efi-bootarm.efi
-    - aws s3 cp grub-efi/output/arm/bin/grub-editenv
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_GRUB/$GRUB_VERSION/arm/grub-editenv
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_GRUB/$GRUB_VERSION/arm/grub-editenv
-    - aws s3 cp grub-efi/output/grub-efi-bootaa64.efi
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_GRUB/$GRUB_VERSION/aarch64/grub-efi-bootaa64.efi
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_GRUB/$GRUB_VERSION/aarch64/grub-efi-bootaa64.efi
-    - aws s3 cp grub-efi/output/aarch64/bin/grub-editenv
-        s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH_GRUB/$GRUB_VERSION/aarch64/grub-editenv
-    - aws s3api put-object-acl --acl public-read --bucket $S3_BUCKET_NAME
-        --key $S3_BUCKET_PATH_GRUB/$GRUB_VERSION/aarch64/grub-editenv
+    - ./prepare-output-folder-for-upload
+    - aws s3 cp --recursive --acl public-read output/upload/* s3://$S3_BUCKET_NAME/mender-convert/
   only:
     - /^(master|[0-9]+\.[0-9]+\.x)$/
