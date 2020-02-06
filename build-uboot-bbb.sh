@@ -22,7 +22,7 @@ uboot_build() {
     local media=$2
     local CROSS_COMPILE=arm-linux-gnueabi-
     local ARCH=arm
-    local MAKE="make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
+    local MAKE="make -j $(nproc) ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
 
     # Test if the toolchain is actually installed
     ${CROSS_COMPILE}gcc --version

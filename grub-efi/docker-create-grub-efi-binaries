@@ -2,13 +2,13 @@
 
 set -e
 
-GRUB_VERSION=${GRUB_VERSION:-2.04}
+GRUB_VERSION=${GRUB_VERSION:-2.02}
 
 GRUB_MODULES="boot linux ext2 fat serial part_msdos part_gpt normal \
               efi_gop iso9660 configfile search loadenv test \
               cat echo gcry_sha256 halt hashsum sleep reboot"
 
-sudo rm -rf output
+rm -rf output
 
 for arch in x86-64 arm aarch64; do
     mkdir -p output/$arch
@@ -29,11 +29,9 @@ for arch in x86-64 arm aarch64; do
     echo -n "Extracting binaries for $arch..."
     docker run --rm --entrypoint "/bin/sh" \
         -v $(pwd)/output/$arch:/export grub-efi:$arch \
-        -c "cp -r /install/* /export"
+        -c "chown -R --reference /export /install/* && mv /install/* /export"
     echo " done"
 done
-
-sudo chown -R $(id -u):$(id -g) output/*
 
 echo "Generating EFI boot images"
 
