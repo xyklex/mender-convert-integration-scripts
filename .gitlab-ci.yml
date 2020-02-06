@@ -50,6 +50,6 @@ publish:s3:
     - apt update && apt install -yyq awscli
   script:
     - ./prepare-output-folder-for-upload
-    - aws s3 cp --recursive --acl public-read output/upload/* s3://$S3_BUCKET_NAME/mender-convert/
+    - aws s3 cp --recursive --acl public-read output/upload/ s3://$S3_BUCKET_NAME/mender-convert/
   only:
     - /^(master|[0-9]+\.[0-9]+\.x)$/
