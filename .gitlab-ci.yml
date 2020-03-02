@@ -1,5 +1,5 @@
 variables:
-  GRUB_VERSION: '2.02'
+  GRUB_VERSION: '2.04'
   DOCKER_REPOSITORY: mendersoftware/mender-convert-integration-scripts
   S3_BUCKET_NAME: mender
 

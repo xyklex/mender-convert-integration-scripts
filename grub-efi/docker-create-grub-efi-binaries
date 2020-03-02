@@ -2,7 +2,7 @@
 
 set -e
 
-GRUB_VERSION=${GRUB_VERSION:-2.02}
+GRUB_VERSION=${GRUB_VERSION:-2.04}
 
 GRUB_MODULES="boot linux ext2 fat serial part_msdos part_gpt normal \
               efi_gop iso9660 configfile search loadenv test \
