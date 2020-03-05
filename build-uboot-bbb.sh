@@ -72,7 +72,7 @@ for TARGET_OS in debian; do
         uboot_build ${TARGET_OS} ${TARGET_MEDIA}
         generate_fw_env_config ${TARGET_OS} ${TARGET_MEDIA}
         BEAGLEBONE_BLACK_CONFIG="beaglebone_black_${TARGET_OS}_${TARGET_MEDIA}"
-        tar cvf ../${BEAGLEBONE_BLACK_CONFIG}-${UBOOT_MENDER_BRANCH}.tar \
+        tar czvf ../${BEAGLEBONE_BLACK_CONFIG}-${UBOOT_MENDER_BRANCH}.tar.gz \
             uboot-git-log.txt \
             u-boot.img \
             MLO \
