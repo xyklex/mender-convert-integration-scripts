@@ -2,11 +2,9 @@
 
 set -e
 
-eval "$(grep '^GRUB_VERSION=' grub-efi/docker-create-grub-efi-binaries)"
 UBOOT_MENDER_BRANCH_BBB=$(grep ^UBOOT_MENDER_BRANCH= ./build-uboot-bbb.sh | cut -d= -f2)
 UBOOT_MENDER_BRANCH_RPI=$(grep ^UBOOT_MENDER_BRANCH= ./build-uboot-rpi.sh | cut -d= -f2)
 
-# U-Boot binaries
 mkdir -p output/upload/uboot/beaglebone
 ln -f output/beaglebone_black_debian_emmc-${UBOOT_MENDER_BRANCH_BBB}.tar.gz output/upload/uboot/beaglebone/beaglebone_black_debian_emmc-${UBOOT_MENDER_BRANCH_BBB}.tar.gz
 ln -f output/beaglebone_black_debian_sdcard-${UBOOT_MENDER_BRANCH_BBB}.tar.gz output/upload/uboot/beaglebone/beaglebone_black_debian_sdcard-${UBOOT_MENDER_BRANCH_BBB}.tar.gz
@@ -15,16 +13,3 @@ mkdir -p output/upload/uboot/raspberrypi
 ln -f output/raspberrypi0w-${UBOOT_MENDER_BRANCH_RPI}.tar.gz output/upload/uboot/raspberrypi/raspberrypi0w-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
 ln -f output/raspberrypi3-${UBOOT_MENDER_BRANCH_RPI}.tar.gz output/upload/uboot/raspberrypi/raspberrypi3-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
 ln -f output/raspberrypi4-${UBOOT_MENDER_BRANCH_RPI}.tar.gz output/upload/uboot/raspberrypi/raspberrypi4-${UBOOT_MENDER_BRANCH_RPI}.tar.gz
-
-# GRUB EFI binaries
-mkdir -p output/upload/grub-efi/$GRUB_VERSION/x86-64
-ln -f grub-efi/output/grub-efi-bootx64.efi output/upload/grub-efi/$GRUB_VERSION/x86-64/grub-efi-bootx64.efi
-ln -f grub-efi/output/x86-64/bin/grub-editenv output/upload/grub-efi/$GRUB_VERSION/x86-64/grub-editenv
-
-mkdir -p output/upload/grub-efi/$GRUB_VERSION/arm
-ln -f grub-efi/output/grub-efi-bootarm.efi output/upload/grub-efi/$GRUB_VERSION/arm/grub-efi-bootarm.efi
-ln -f grub-efi/output/arm/bin/grub-editenv output/upload/grub-efi/$GRUB_VERSION/arm/grub-editenv
-
-mkdir -p output/upload/grub-efi/$GRUB_VERSION/aarch64
-ln -f grub-efi/output/grub-efi-bootaa64.efi output/upload/grub-efi/$GRUB_VERSION/aarch64/grub-efi-bootaa64.efi
-ln -f grub-efi/output/aarch64/bin/grub-editenv output/upload/grub-efi/$GRUB_VERSION/aarch64/grub-editenv
