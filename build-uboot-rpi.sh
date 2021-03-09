@@ -41,7 +41,7 @@ export ARCH=arm
 # Test if the toolchain is actually installed
 arm-buildroot-linux-gnueabihf-gcc --version
 
-UBOOT_MENDER_BRANCH=2019.01
+UBOOT_MENDER_BRANCH=2020.01
 
 # Clean-up old builds
 rm -rf uboot-mender
