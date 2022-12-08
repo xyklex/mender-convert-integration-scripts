@@ -19,7 +19,7 @@ build:uboot:
   stage: build
   image: docker
   services:
-    - docker:19.03.5-dind
+    - docker:20.10.21-dind
   script:
     - IMAGE_NAME=$DOCKER_REPOSITORY:pr ./docker-create-integration-binaries
   artifacts:
