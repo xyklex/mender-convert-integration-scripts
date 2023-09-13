@@ -47,19 +47,20 @@ rpi_defconfig=$1
 rpi_board=$2
 
 # ARM 32bit build (custom toolchain to support ARMv6)
-export PATH="$PATH:/armv6-eabihf--glibc--stable-2018.11-1/bin"
-export CROSS_COMPILE=arm-buildroot-linux-gnueabihf-
-export ARCH=arm
+export PATH="$PATH:/aarch64--glibc--stable-2020.08-1/bin"
+ls /aarch64--glibc--stable-2020.08-1/bin/
+export CROSS_COMPILE=aarch64-linux-
+export ARCH=aarch64
 
 # Test if the toolchain is actually installed
-arm-buildroot-linux-gnueabihf-gcc --version
+aarch64-linux-gcc --version
 
-UBOOT_MENDER_BRANCH=2020.01
+UBOOT_MENDER_BRANCH=2023.10-rc4
 
 # Clean-up old builds
 rm -rf uboot-mender
 
-git clone https://github.com/mendersoftware/uboot-mender.git -b mender-rpi-${UBOOT_MENDER_BRANCH}
+git clone https://github.com/xyklex/uboot-mender.git -b mender-rpi-${UBOOT_MENDER_BRANCH}
 cd uboot-mender
 
 make ${rpi_defconfig}
@@ -72,11 +73,17 @@ cat <<- 'EOF' > boot.cmd
 
 fdt addr ${fdt_addr} && fdt get value bootargs /chosen bootargs
 run mender_setup
+
+setenv kernel_comp_addr_r 0x02700000
+setenv kernel_comp_size 10344286
+
 mmc dev ${mender_uboot_dev}
-if load ${mender_uboot_root} ${kernel_addr_r} /boot/zImage; then
+if load ${mender_uboot_boot} ${kernel_addr_r} zImage; then
     bootz ${kernel_addr_r} - ${fdt_addr}
-elif load ${mender_uboot_root} ${kernel_addr_r} /boot/uImage; then
+elif load ${mender_uboot_boot} ${kernel_addr_r} uImage; then
     bootm ${kernel_addr_r} - ${fdt_addr}
+elif load ${mender_uboot_boot} ${kernel_addr_r} vmlinuz; then
+    booti ${kernel_addr_r} - ${fdt_addr}
 else
     echo "No bootable Kernel found."
 fi
@@ -94,6 +101,7 @@ cat <<- EOF > fw_env.config
 EOF
 
 mkdir integration-binaries
+ls -la tools/env/
 cp u-boot.bin tools/env/fw_printenv fw_env.config boot.scr integration-binaries/
 git log --graph --pretty=oneline -15 > integration-binaries/uboot-git-log.txt
 cd integration-binaries
